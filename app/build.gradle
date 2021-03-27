@@ -52,8 +52,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.4'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.4'
 
+    /////////////////////////////////////////////////////////////////////
     // ui libraries implementation
-
     // viewModel, liveData dependency
     def lifecycle_version = "2.3.1"
     def arch_version = "2.1.0"
@@ -62,11 +62,13 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+
     // glide
     def glide_version = "4.11.0"
     implementation "com.goithub.bumptech.glide:glide:$glide_version"
     kapt "com.goithub.bumptech.glide:compiler:$glide_version"
 
+    /////////////////////////////////////////////////////////////////////
     // data libraries implementation
     // room
     def room_version = "2.2.6"
@@ -79,6 +81,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttp_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
 
     // coroutines
     def coroutines_version = "1.3.7"
@@ -86,9 +89,23 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     // dagger
-    def dagger_version = "2.29.1"
+    def dagger_version = "2.33"
+    def dagger_android_version = "2.29.1"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation "com.google.dagger:dagger-android:$dagger_android_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_android_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+
+    /////////////////////////////////////////////////////////////////////
+    // for better asynchronous programming
+    // rxAndroid, rxJava, rxKotlin
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.17'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
+
+    //implementation 'com.jakewharton.rxbinding3:rxbinding:3.1.0'
+    //implementation 'com.uniquext.android:rxlifecycle:2.0.0'
 
     // test?
     testImplementation 'junit:junit:4.13.2'
