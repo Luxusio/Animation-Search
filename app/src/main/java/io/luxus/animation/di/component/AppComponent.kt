@@ -3,15 +3,19 @@ package io.luxus.animation.di.component
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjectionModule
 import io.luxus.animation.MainApplication
 import io.luxus.animation.di.module.ApplicationModule
 import io.luxus.animation.di.module.NetworkModule
 import io.luxus.animation.di.module.RepositoryModule
+import io.luxus.animation.presentation.viewmodel.AnimationListViewModel
 import javax.inject.Singleton
+
 
 @Singleton
 @Component(
     modules = [
+        AndroidInjectionModule::class,
         ApplicationModule::class,
         NetworkModule::class,
         RepositoryModule::class
@@ -28,6 +32,12 @@ interface AppComponent {
         fun build(): AppComponent
     }
 
-    fun inject(application: MainApplication)
+    // application
+    fun inject(mainApplication: MainApplication)
+
+    // viewModel
+    fun inject(animationListViewModel: AnimationListViewModel)
+
+
 
 }
