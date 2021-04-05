@@ -1,4 +1,4 @@
-package io.luxus.animation.data.source.remote.model
+package io.luxus.animation.data.source.remote.model.discover
 
 data class DiscoverResult(
     val count: Int,

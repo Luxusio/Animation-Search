@@ -2,10 +2,11 @@ package io.luxus.animation.presentation.viewmodel
 
 import android.util.Log
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import dagger.assisted.Assisted
-import io.luxus.animation.data.source.remote.model.DiscoverResult
+import io.luxus.animation.MainApplication
+import io.luxus.animation.data.source.remote.model.discover.DiscoverResult
 import io.luxus.animation.domain.model.AnimationModel
 import io.luxus.animation.domain.usecase.GetAnimationUseCase
 import io.luxus.animation.presentation.view.adapter.RecyclerViewAdapter
@@ -17,16 +18,17 @@ import org.jetbrains.annotations.NonNls
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
-class AnimationListViewModel @Inject constructor(
-    private val getAnimationUseCase: GetAnimationUseCase
-) : ViewModel() {
+class AnimationListViewModel : ViewModel() {
 
     private val TAG = AnimationListViewModel::class.java.simpleName
 
-    private val disposable: CompositeDisposable = CompositeDisposable()
-    private val pageSize = 20
+    @Inject lateinit var getAnimationUseCase: GetAnimationUseCase
 
-    private val animationList: ArrayList<AnimationModel> = ArrayList()
+    private val disposable = CompositeDisposable()
+    private val pageSize = 20
+    val prefetchPage: Int = 2
+
+    private val animationList = ArrayList<AnimationModel>()
 
     private val numberPageHashMap = ConcurrentHashMap<Int, Int>()
     private val pagePositionHashMap = ConcurrentHashMap<Int, Int>()
@@ -40,15 +42,60 @@ class AnimationListViewModel @Inject constructor(
     private var bPage: Int = 1
     private var offset: Int = 0
 
-    private var isLoading: Boolean = false
-
+    private var isLoading = false
+    private var notDid = true
 
     private val nowPage = ObservableInt(1)
     private val maxPage = ObservableInt(-1)
     private val contentRange = ObservableInt(-1)
 
+    private val initialLoadSucceed = MutableLiveData<Boolean>()
+    private var initiallyNotLoaded = true
+
+    init {
+        MainApplication.app.appComponent.inject(this)
+    }
+
     fun init(listListener: RecyclerViewAdapter.Listener) {
         this.listListener = listListener
+    }
+
+    fun loadFirst() {
+        if (notDid) {
+            notDid = false
+            loadBottomPage()
+        }
+    }
+
+    fun changePage(page: Int) {
+        val maxPage = maxPage.get()
+        val contentRange = contentRange.get()
+
+        removeAll()
+        setPage(page)
+        this.maxPage.set(maxPage)
+        this.contentRange.set(contentRange)
+        this.loadBottomPage()
+    }
+
+    private fun removeAll() {
+        val count = animationList.size
+        listListener?.onRangeRemovedSync(0, count)
+        disposable.clear()
+
+        numberPageHashMap.clear()
+        pagePositionHashMap.clear()
+        animationList.clear()
+        setPage(1)
+
+        nowPage.set(1)
+        maxPage.set(-1)
+        contentRange.set(-1)
+    }
+
+    private fun setPage(page: Int) {
+        bPage = page
+        tPage = page - 1
     }
 
     private fun setContentRange(length: Int) {
@@ -59,28 +106,31 @@ class AnimationListViewModel @Inject constructor(
 
 
     private fun loadPage(page: Int): Single<DiscoverResult> {
-        return getAnimationUseCase.getDiscover(sortType, page * pageSize, pageSize)
+        return getAnimationUseCase.getDiscover(sortType, pageSize, page * pageSize)
     }
 
-    private fun loadPageSeparated(loadPage: Int, loadPageCallback: LoadPageCallback) {
+    private fun loadPageSeparated(displayPage: Int, loadPageCallback: LoadPageCallback) {
         isLoading = true
-        loadPage(loadPage)
+        loadPage(displayPage - 1)
                 .subscribe(object : SingleObserver<DiscoverResult> {
                     override fun onSubscribe(@NonNls d: Disposable) {
                         disposable.add(d)
                     }
 
                     override fun onSuccess(result: DiscoverResult) {
-
+                        if (initiallyNotLoaded) {
+                            initiallyNotLoaded = false
+                            initialLoadSucceed.postValue(true)
+                        }
                         setContentRange(result.count)
 
                         val newAnimationList: ArrayList<AnimationModel> = ArrayList()
                         result.results.forEach {
                             val animationModel = AnimationModel(
-                                    it.id, it.img, it.name
+                                it.id, it.img, it.name
                             )
                             newAnimationList.add(animationModel)
-                            numberPageHashMap
+                            numberPageHashMap[it.id] = displayPage
                         }
 
                         loadPageCallback.call(newAnimationList)
@@ -90,10 +140,14 @@ class AnimationListViewModel @Inject constructor(
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(TAG, "Failed to load animation List $loadPage")
+                        Log.e(TAG, "Failed to load animation List $displayPage")
                         e.printStackTrace()
 
                         isLoading = false
+                        if (initiallyNotLoaded) {
+                            initiallyNotLoaded = false
+                            initialLoadSucceed.postValue(false)
+                        }
                     }
                 })
     }
@@ -102,9 +156,9 @@ class AnimationListViewModel @Inject constructor(
         if (isLoading || tPage < 1) return
 
         val displayPage = tPage--
-        val loadPage = tPage
+        //val loadPage = tPage
 
-        loadPageSeparated(loadPage, object : LoadPageCallback {
+        loadPageSeparated(displayPage, object : LoadPageCallback {
             override fun call(animationModels: ArrayList<AnimationModel>) {
                 val size: Int = animationModels.size
                 synchronized(pagePositionHashMap) {
@@ -122,7 +176,7 @@ class AnimationListViewModel @Inject constructor(
                     animationList.addAll(offset, animationModels)
                 }
 
-                listListener?.onRangeInserted(offset, size);
+                listListener?.onRangeInsertedSync(offset, size);
             }
         })
     }
@@ -130,10 +184,10 @@ class AnimationListViewModel @Inject constructor(
     fun loadBottomPage() {
         if (isLoading || maxPage.get() != -1 && bPage > maxPage.get()) return
 
-        val loadPage = bPage - 1
+        //val loadPage = bPage - 1
         val displayPage = bPage++
 
-        loadPageSeparated(loadPage, object : LoadPageCallback {
+        loadPageSeparated(displayPage, object : LoadPageCallback {
             override fun call(animationModels: ArrayList<AnimationModel>) {
                 val listSize: Int = animationList.size
                 val size: Int = animationModels.size
@@ -143,12 +197,26 @@ class AnimationListViewModel @Inject constructor(
                     animationList.addAll(animationModels)
                 }
 
-                listListener?.onRangeInserted(listSize, size)
+                listListener?.onRangeInsertedSync(listSize, size)
             }
         })
     }
 
     fun getAnimationList(): ArrayList<AnimationModel> = animationList
+
+    fun getNumberPageHashMap(): ConcurrentHashMap<Int, Int> = numberPageHashMap
+
+    fun getPagePositionHashMap(): ConcurrentHashMap<Int, Int> = pagePositionHashMap
+
+    fun getNowPage(): ObservableInt = nowPage
+
+    fun getMaxPage(): ObservableInt = maxPage
+
+    fun getTPage(): Int = tPage
+
+    fun getBPage(): Int = bPage
+
+    fun getInitialLoadSucceed(): LiveData<Boolean> = initialLoadSucceed
 
     interface LoadPageCallback {
         fun call(animationModels: ArrayList<AnimationModel>)

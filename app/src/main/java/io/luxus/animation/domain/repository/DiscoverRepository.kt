@@ -1,9 +1,7 @@
 package io.luxus.animation.domain.repository
 
-import io.luxus.animation.data.source.remote.model.DiscoverResult
-import io.luxus.animation.domain.model.AnimationModel
+import io.luxus.animation.data.source.remote.model.discover.DiscoverResult
 import io.reactivex.Single
-import retrofit2.http.Query
 
 interface DiscoverRepository {
 

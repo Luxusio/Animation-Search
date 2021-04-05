@@ -1,8 +1,9 @@
 package io.luxus.animation.data.source.remote
 
-import io.luxus.animation.data.source.remote.model.DiscoverResult
+import io.luxus.animation.data.source.remote.model.discover.DiscoverResult
 import io.reactivex.Single
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RetrofitService {

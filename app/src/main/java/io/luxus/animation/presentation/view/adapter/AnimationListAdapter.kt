@@ -30,7 +30,7 @@ class AnimationListAdapter(private val animationList: List<AnimationModel>)
     class AnimationViewHolder(private val binding: ItemAnimationBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(animationModel: AnimationModel) {
-            TODO("implement bind things")
+            binding.model = animationModel
         }
 
     }

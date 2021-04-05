@@ -1,6 +1,6 @@
 package io.luxus.animation.domain.usecase
 
-import io.luxus.animation.data.source.remote.model.DiscoverResult
+import io.luxus.animation.data.source.remote.model.discover.DiscoverResult
 import io.luxus.animation.domain.repository.DiscoverRepository
 import io.reactivex.Single
 import javax.inject.Inject

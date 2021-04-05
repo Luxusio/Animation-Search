@@ -4,19 +4,108 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="io.luxus.animation.presentation.viewmodel.AnimationListViewModel"/>
+        <variable
+            name="listener"
+            type="io.luxus.animation.presentation.view.fragment.AnimationListFragment.Listener" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <Button
+            android:id="@+id/fgl_page_previous"
+            android:layout_width="38dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:background="@drawable/ic_baseline_navigate_before_24"
+            android:onClick="@{listener::onPrevPageClicked}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <Button
+            android:id="@+id/fgl_page_next"
+            android:layout_width="38dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:background="@drawable/ic_baseline_navigate_next_24"
+            android:onClick="@{listener::onNextPageClicked}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <!-- https://www.4te.co.kr/791 [체리필터의 인생이야기] -->
+        <EditText
+            android:id="@+id/fgl_page_edit"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="?android:attr/textColorSecondary"
+            android:inputType="numberDecimal"
+            android:background="@null"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:gravity="end"
+            android:singleLine="true"
+            android:imeOptions="actionGo"
+            android:hint="@string/_1"
+            android:autofillHints="@string/_1"
+            android:text="@{Integer.toString(viewModel.nowPage)}"
+            android:digits="0123456789"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/fgl_page_splitter"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            tools:text="0000" />
+
+        <TextView
+            android:id="@+id/fgl_page_splitter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/slash"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/fgl_page_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{Integer.toString(viewModel.maxPage)}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:gravity="start"
+            app:layout_constraintStart_toEndOf="@+id/fgl_page_splitter"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="-1"/>
+
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:id="@+id/item_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/fgl_page_previous" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
