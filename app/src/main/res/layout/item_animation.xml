@@ -7,8 +7,7 @@
     <data>
         <variable
             name="model"
-            type="io.luxus.animation.domain.model.AnimationModel"
-            />
+            type="io.luxus.animation.domain.model.AnimationModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

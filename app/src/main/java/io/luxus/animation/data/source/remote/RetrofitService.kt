@@ -8,7 +8,6 @@ import retrofit2.http.Query
 
 interface RetrofitService {
 
-
     @GET("api/search/v1/discover/")
     fun getAnimationListFromDiscover(
         @Query("sort") sortType: String,

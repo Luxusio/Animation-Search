@@ -7,13 +7,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetAnimationUseCase
+class AnimationUseCase
     @Inject constructor(private val discoverRepository: DiscoverRepository) {
 
     fun getDiscover(sortType: String, size: Int, offset: Int): Single<DiscoverResult> {
         return discoverRepository.getAnimationListResult(sortType, size, offset)
     }
-
-
 
 }

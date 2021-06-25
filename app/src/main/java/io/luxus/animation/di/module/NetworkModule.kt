@@ -4,17 +4,19 @@ import android.content.Context
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import io.luxus.animation.data.source.remote.RetrofitService
 import io.luxus.animation.util.Constants.BASE_URL
 import okhttp3.Cache
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-@Module(includes = [ApplicationModule::class])
+@Module
+@InstallIn(SingletonComponent::class)
 class NetworkModule {
 
     @Singleton
@@ -41,11 +43,11 @@ class NetworkModule {
     @Provides
     @Singleton
     fun providesOkHttpClient(cache: Cache): OkHttpClient {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        //val interceptor = HttpLoggingInterceptor()
+        //interceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
             .cache(cache)
-            .addNetworkInterceptor(interceptor)
+            //.addNetworkInterceptor(interceptor)
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
                     .header("laftel", "TeJava")

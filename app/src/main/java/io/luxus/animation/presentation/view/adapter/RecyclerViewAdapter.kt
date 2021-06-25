@@ -5,7 +5,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 
 abstract class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val listener: Listener = object : Listener {
+    private val listener: Listener = object: Listener {
         override fun onItemChanged(position: Int) {
             AndroidSchedulers.mainThread().scheduleDirect { notifyItemChanged(position) }
         }

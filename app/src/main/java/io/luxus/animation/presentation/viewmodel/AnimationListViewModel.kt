@@ -5,10 +5,9 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import io.luxus.animation.MainApplication
 import io.luxus.animation.data.source.remote.model.discover.DiscoverResult
 import io.luxus.animation.domain.model.AnimationModel
-import io.luxus.animation.domain.usecase.GetAnimationUseCase
+import io.luxus.animation.domain.usecase.AnimationUseCase
 import io.luxus.animation.presentation.view.adapter.RecyclerViewAdapter
 import io.reactivex.Single
 import io.reactivex.SingleObserver
@@ -18,11 +17,13 @@ import org.jetbrains.annotations.NonNls
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
-class AnimationListViewModel : ViewModel() {
+class AnimationListViewModel @Inject constructor(
+    private val animationUseCase: AnimationUseCase,
+) : ViewModel() {
 
     private val TAG = AnimationListViewModel::class.java.simpleName
 
-    @Inject lateinit var getAnimationUseCase: GetAnimationUseCase
+    //@Inject lateinit var getAnimationUseCase: GetAnimationUseCase
 
     private val disposable = CompositeDisposable()
     private val pageSize = 20
@@ -52,9 +53,7 @@ class AnimationListViewModel : ViewModel() {
     private val initialLoadSucceed = MutableLiveData<Boolean>()
     private var initiallyNotLoaded = true
 
-    init {
-        MainApplication.app.appComponent.inject(this)
-    }
+
 
     fun init(listListener: RecyclerViewAdapter.Listener) {
         this.listListener = listListener
@@ -106,7 +105,7 @@ class AnimationListViewModel : ViewModel() {
 
 
     private fun loadPage(page: Int): Single<DiscoverResult> {
-        return getAnimationUseCase.getDiscover(sortType, pageSize, page * pageSize)
+        return animationUseCase.getDiscover(sortType, pageSize, page * pageSize)
     }
 
     private fun loadPageSeparated(displayPage: Int, loadPageCallback: LoadPageCallback) {
