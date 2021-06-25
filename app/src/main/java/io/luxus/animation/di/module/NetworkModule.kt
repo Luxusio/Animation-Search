@@ -1,7 +1,6 @@
 package io.luxus.animation.di.module
 
 import android.content.Context
-import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

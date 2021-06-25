@@ -10,14 +10,9 @@ import io.luxus.animation.data.source.remote.model.discover.DiscoverResult
 import io.luxus.animation.domain.model.AnimationModel
 import io.luxus.animation.domain.usecase.AnimationUseCase
 import io.luxus.animation.presentation.view.adapter.RecyclerViewAdapter
-import io.reactivex.Single
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.annotations.NonNls
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
