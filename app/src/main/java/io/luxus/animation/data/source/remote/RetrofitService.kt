@@ -14,6 +14,6 @@ interface RetrofitService {
         @Query("viewable") viewable: Boolean,
         @Query("size") size: Int,
         @Query("offset") offset: Int
-    ): Single<DiscoverResult>
+    ): DiscoverResult
 
 }

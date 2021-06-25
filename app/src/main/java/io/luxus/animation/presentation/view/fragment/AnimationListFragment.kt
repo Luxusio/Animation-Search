@@ -6,15 +6,13 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import io.luxus.animation.R
 import io.luxus.animation.databinding.FragmentAnimationListBinding
@@ -26,10 +24,13 @@ import kotlin.math.abs
 
 class AnimationListFragment : Fragment() {
 
-    val TAG: String = AnimationListFragment::class.simpleName.toString()
+    companion object {
+        private val TAG: String = AnimationListFragment::class.simpleName.toString()
+    }
+
+    private val viewModel: AnimationListViewModel by viewModels()
 
     private lateinit var animationListAdapter: AnimationListAdapter
-    private lateinit var viewModel: AnimationListViewModel
 
     private lateinit var startScroller: SmoothScroller
     private lateinit var recyclerView: RecyclerView
@@ -62,17 +63,12 @@ class AnimationListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
 
-        viewModel = ViewModelProvider(this).get(AnimationListViewModel::class.java)
         animationListAdapter = AnimationListAdapter(viewModel.getAnimationList())
         animationListAdapter.setHasStableIds(true)
         val binding: FragmentAnimationListBinding = FragmentAnimationListBinding.inflate(
@@ -80,14 +76,16 @@ class AnimationListFragment : Fragment() {
                 container,
                 false
         )
-        viewModel.init(animationListAdapter.getListener())
-        viewModel.getInitialLoadSucceed().observe(viewLifecycleOwner, {
-            if (it) binding.progressBar.visibility = View.GONE
-            else Toast.makeText(
-                    requireContext(),
-                    R.string.initial_load_failed,
-                    Toast.LENGTH_LONG
-            ).show()
+        viewModel.init(animationListAdapter.listener)
+        viewModel.getLoadStatus().observe(viewLifecycleOwner, {
+            if (it == null) return@observe
+            when (it) {
+                AnimationListViewModel.LoadStatus.SUCCEED-> binding.progressBar.visibility = View.GONE
+                AnimationListViewModel.LoadStatus.LOADING-> binding.progressBar.visibility = View.VISIBLE
+                AnimationListViewModel.LoadStatus.FAILED-> Toast.makeText(
+                    requireContext(), R.string.initial_load_failed,
+                    Toast.LENGTH_LONG).show()
+            }
         })
 
         startScroller = object : LinearSmoothScroller(context) {
@@ -139,7 +137,7 @@ class AnimationListFragment : Fragment() {
             }
         })
 
-        binding.fglPageEdit.clearFocus();
+        binding.fglPageEdit.clearFocus()
         binding.fglPageEdit.setOnEditorActionListener OnEditorActionListener@{ v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 var text = v.text.toString()

@@ -5,6 +5,6 @@ import io.reactivex.Single
 
 interface DiscoverRepository {
 
-    fun getAnimationListResult(sortType: String, size: Int, offset: Int): Single<DiscoverResult>
+    fun getAnimationListResult(sortType: String, size: Int, offset: Int): DiscoverResult
 
 }
