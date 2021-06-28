@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class DiscoverRepositoryImpl @Inject constructor(private val retrofitService: RetrofitService) : DiscoverRepository {
 
     override fun getAnimationListResult(sortType: String, size: Int, offset: Int): DiscoverResult =
-        retrofitService.getAnimationListFromDiscover(sortType, true, size, offset)
+        retrofitService.getAnimationListFromDiscover(sortType, true, size, offset).execute().body()!!
 
 
 }

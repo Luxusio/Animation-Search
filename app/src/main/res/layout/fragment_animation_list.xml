@@ -18,7 +18,7 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/fgl_page_previous"
+            android:id="@+id/page_previous"
             android:layout_width="38dp"
             android:layout_height="48dp"
             android:layout_marginStart="32dp"
@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <Button
-            android:id="@+id/fgl_page_next"
+            android:id="@+id/page_next"
             android:layout_width="38dp"
             android:layout_height="48dp"
             android:layout_marginEnd="32dp"
@@ -42,7 +42,7 @@
 
         <!-- https://www.4te.co.kr/791 [체리필터의 인생이야기] -->
         <EditText
-            android:id="@+id/fgl_page_edit"
+            android:id="@+id/page_edit"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -59,12 +59,12 @@
             android:text="@{Integer.toString(viewModel.nowPage)}"
             android:digits="0123456789"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/fgl_page_splitter"
+            app:layout_constraintEnd_toStartOf="@+id/page_splitter"
             app:layout_constraintHorizontal_chainStyle="packed"
             tools:text="0000" />
 
         <TextView
-            android:id="@+id/fgl_page_splitter"
+            android:id="@+id/page_splitter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/slash"
@@ -75,7 +75,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/fgl_page_max"
+            android:id="@+id/page_max"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{Integer.toString(viewModel.maxPage)}"
@@ -83,7 +83,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:gravity="start"
-            app:layout_constraintStart_toEndOf="@+id/fgl_page_splitter"
+            app:layout_constraintStart_toEndOf="@+id/page_splitter"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="-1"/>
 
@@ -95,7 +95,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fgl_page_previous" />
+            app:layout_constraintTop_toBottomOf="@+id/page_previous" />
 
         <ProgressBar
             android:id="@+id/progress_bar"

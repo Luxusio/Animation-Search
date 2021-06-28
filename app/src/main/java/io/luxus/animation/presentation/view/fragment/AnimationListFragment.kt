@@ -38,7 +38,7 @@ class AnimationListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
 
     private val pageListener = object : Listener {
-        override fun onNextPageClicked(view: View?) {
+        override fun onNextPageClicked(view: View) {
             val nowPage: Int = viewModel.getNowPage().get()
             if(nowPage == viewModel.getMaxPage().get()) return
 
@@ -47,7 +47,7 @@ class AnimationListFragment : Fragment() {
             }
         }
 
-        override fun onPrevPageClicked(view: View?) {
+        override fun onPrevPageClicked(view: View) {
             val nowPage: Int = viewModel.getNowPage().get()
             if (nowPage == 1) return
 
@@ -59,8 +59,8 @@ class AnimationListFragment : Fragment() {
     }
 
     interface Listener {
-        fun onNextPageClicked(view: View?)
-        fun onPrevPageClicked(view: View?)
+        fun onNextPageClicked(view: View)
+        fun onPrevPageClicked(view: View)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,12 +97,10 @@ class AnimationListFragment : Fragment() {
         recyclerView.setItemViewCacheSize(20)
         //recyclerView.isDrawingCacheEnabled = true
         //recyclerView.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
-        recyclerView.layoutManager = GridLayoutManager(context, 3)
+        recyclerView.layoutManager = GridLayoutManager(context, 4)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-
-                if (true) return
 
                 val layoutManager: GridLayoutManager =
                         recyclerView.layoutManager as GridLayoutManager
@@ -138,8 +136,8 @@ class AnimationListFragment : Fragment() {
             }
         })
 
-        binding.fglPageEdit.clearFocus()
-        binding.fglPageEdit.setOnEditorActionListener OnEditorActionListener@{ v, actionId, _ ->
+        binding.pageEdit.clearFocus()
+        binding.pageEdit.setOnEditorActionListener OnEditorActionListener@{ v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 var text = v.text.toString()
                 val idx = text.indexOf('.')
@@ -188,8 +186,8 @@ class AnimationListFragment : Fragment() {
     }
 
     private fun teleportPage(page: Int) {
-        //val position: Int = viewModel.getPagePositionHashMap()[page]!!
-        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(page, 0)
+        val position: Int = viewModel.getPagePositionHashMap()[page]!!
+        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
     }
 
 }
