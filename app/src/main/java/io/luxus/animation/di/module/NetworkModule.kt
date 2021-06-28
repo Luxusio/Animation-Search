@@ -18,34 +18,28 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
 
-    @Singleton
-    @Provides
-    fun provideService(retrofit: Retrofit): RetrofitService {
-        return retrofit.create(RetrofitService::class.java)
-    }
-
     @Provides
     @Singleton
-    fun providesRetrofit(
+    fun providesRetrofitService(
         gsonConverterFactory: GsonConverterFactory,
         rxJava2CallAdapterFactory: RxJava2CallAdapterFactory,
         okHttpClient: OkHttpClient
-    ): Retrofit {
+    ): RetrofitService {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(gsonConverterFactory)
             .addCallAdapterFactory(rxJava2CallAdapterFactory)
             .client(okHttpClient)
             .build()
+            .create(RetrofitService::class.java)
     }
 
     @Provides
-    @Singleton
-    fun providesOkHttpClient(cache: Cache): OkHttpClient {
+    fun providesOkHttpClient(): OkHttpClient {
         //val interceptor = HttpLoggingInterceptor()
         //interceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
-            .cache(cache)
+            //.cache(cache)
             //.addNetworkInterceptor(interceptor)
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
@@ -57,21 +51,18 @@ class NetworkModule {
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun providesCache(context: Context): Cache {
-        val cacheSize = (5 * 1024 * 1024).toLong()
-        return Cache(context.cacheDir, cacheSize)
-    }
+//    @Provides
+//    fun providesCache(context: Context): Cache {
+//        val cacheSize = (5 * 1024 * 1024).toLong()
+//        return Cache(context.cacheDir, cacheSize)
+//    }
 
     @Provides
-    @Singleton
     fun providesGsonConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
 
     @Provides
-    @Singleton
     fun providesRxJavaCallAdapterFactory(): RxJava2CallAdapterFactory {
         return RxJava2CallAdapterFactory.create()
     }

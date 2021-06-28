@@ -1,5 +1,6 @@
 package io.luxus.animation.di.module
 
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,11 +11,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RepositoryModule {
+abstract class RepositoryModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideDiscoverRepository(discoverRepository: DiscoverRepositoryImpl): DiscoverRepository = discoverRepository
+    abstract fun bindDiscoverRepository(discoverRepository: DiscoverRepositoryImpl): DiscoverRepository
 
 
 }

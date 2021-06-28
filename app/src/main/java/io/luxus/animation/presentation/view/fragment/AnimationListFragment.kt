@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
+import dagger.hilt.android.AndroidEntryPoint
 import io.luxus.animation.R
 import io.luxus.animation.databinding.FragmentAnimationListBinding
 import io.luxus.animation.domain.model.AnimationModel
@@ -22,6 +23,7 @@ import io.luxus.animation.presentation.viewmodel.AnimationListViewModel
 import java.util.*
 import kotlin.math.abs
 
+@AndroidEntryPoint
 class AnimationListFragment : Fragment() {
 
     companion object {
@@ -71,11 +73,8 @@ class AnimationListFragment : Fragment() {
 
         animationListAdapter = AnimationListAdapter(viewModel.getAnimationList())
         animationListAdapter.setHasStableIds(true)
-        val binding: FragmentAnimationListBinding = FragmentAnimationListBinding.inflate(
-                inflater,
-                container,
-                false
-        )
+        val binding = FragmentAnimationListBinding.inflate(inflater, container, false)
+
         viewModel.init(animationListAdapter.listener)
         viewModel.getLoadStatus().observe(viewLifecycleOwner, {
             if (it == null) return@observe
@@ -88,7 +87,7 @@ class AnimationListFragment : Fragment() {
             }
         })
 
-        startScroller = object : LinearSmoothScroller(context) {
+        startScroller = object : LinearSmoothScroller(requireContext()) {
             override fun getVerticalSnapPreference(): Int = SNAP_TO_START
         }
 
@@ -102,6 +101,8 @@ class AnimationListFragment : Fragment() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+
+                if (true) return
 
                 val layoutManager: GridLayoutManager =
                         recyclerView.layoutManager as GridLayoutManager
@@ -190,6 +191,7 @@ class AnimationListFragment : Fragment() {
         //val position: Int = viewModel.getPagePositionHashMap()[page]!!
         (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(page, 0)
     }
+
 }
 
 

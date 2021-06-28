@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.luxus.animation.data.source.remote.model.discover.DiscoverResult
 import io.luxus.animation.domain.model.AnimationModel
 import io.luxus.animation.domain.usecase.AnimationUseCase
@@ -13,9 +14,9 @@ import io.luxus.animation.presentation.view.adapter.RecyclerViewAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
+@HiltViewModel
 class AnimationListViewModel @Inject constructor(
     private val animationUseCase: AnimationUseCase,
 ) : ViewModel() {
@@ -27,13 +28,12 @@ class AnimationListViewModel @Inject constructor(
     private val pageSize = 20
     val prefetchPage: Int = 2
 
-    private val animationList = ArrayList<AnimationModel>()
+    private val animationList: MutableList<AnimationModel> = ArrayList()
 
-    private val numberPageHashMap = ConcurrentHashMap<Int, Int>()
-    private val pagePositionHashMap = ConcurrentHashMap<Int, Int>()
+    private val numberPageHashMap: MutableMap<Int, Int> = HashMap()
+    private val pagePositionHashMap: MutableMap<Int, Int> = HashMap()
 
     private lateinit var listListener: RecyclerViewAdapter.Listener
-
 
     private var sortType: String = "rank"
 
@@ -192,11 +192,11 @@ class AnimationListViewModel @Inject constructor(
         })
     }
 
-    fun getAnimationList(): ArrayList<AnimationModel> = animationList
+    fun getAnimationList(): List<AnimationModel> = animationList
 
-    fun getNumberPageHashMap(): ConcurrentHashMap<Int, Int> = numberPageHashMap
+    fun getNumberPageHashMap(): Map<Int, Int> = numberPageHashMap
 
-    fun getPagePositionHashMap(): ConcurrentHashMap<Int, Int> = pagePositionHashMap
+    fun getPagePositionHashMap(): Map<Int, Int> = pagePositionHashMap
 
     fun getNowPage(): ObservableInt = nowPage
     fun getMaxPage(): ObservableInt = maxPage
