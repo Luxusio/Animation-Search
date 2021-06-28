@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.luxus.animation.databinding.ItemAnimationBinding
 import io.luxus.animation.domain.model.AnimationModel
+import io.luxus.animation.presentation.view.custom.adapter.RecyclerViewAdapter
 
 class AnimationListAdapter(private val animationList: List<AnimationModel>)
-    : RecyclerViewAdapter() {
+    : RecyclerViewAdapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater: LayoutInflater = LayoutInflater.from(parent.context)

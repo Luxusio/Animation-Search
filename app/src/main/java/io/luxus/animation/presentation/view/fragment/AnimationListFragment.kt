@@ -19,6 +19,7 @@ import io.luxus.animation.R
 import io.luxus.animation.databinding.FragmentAnimationListBinding
 import io.luxus.animation.domain.model.AnimationModel
 import io.luxus.animation.presentation.view.adapter.AnimationListAdapter
+import io.luxus.animation.presentation.view.custom.listener.RecyclerItemClickListener
 import io.luxus.animation.presentation.viewmodel.AnimationListViewModel
 import java.util.*
 import kotlin.math.abs
@@ -63,10 +64,6 @@ class AnimationListFragment : Fragment() {
         fun onPrevPageClicked(view: View)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -98,6 +95,15 @@ class AnimationListFragment : Fragment() {
         //recyclerView.isDrawingCacheEnabled = true
         //recyclerView.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
         recyclerView.layoutManager = GridLayoutManager(context, 4)
+        recyclerView.addOnItemTouchListener(RecyclerItemClickListener(requireContext(), object:
+            RecyclerItemClickListener.OnItemClickListener.Builder() {
+            override fun onItemClick(view: View, position: Int) {
+                super.onItemClick(view, position)
+                // TODO : move fragment
+
+
+            }
+        }))
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
