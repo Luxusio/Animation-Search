@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Animation</string>
+    <string name="animation_thumbnail">Animation Thumbnail</string>
+    <string name="animation_title">Animation Title</string>
+
+    <string name="initial_load_failed">로딩에 실패했습니다. 인터넷 연결을 확인해주세요.</string>
+    <string name="slash">/</string>
+    <string name="_1">1</string>
 </resources>
